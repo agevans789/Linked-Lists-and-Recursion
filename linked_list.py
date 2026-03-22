@@ -1,4 +1,7 @@
 
+from tracemalloc import start
+
+
 class Node:
     """
     A Node class to store integer data and a reference to the next node.
@@ -10,7 +13,8 @@ class Node:
         - Assign the provided 'data' to an instance variable.
         - Initialize 'next' to None.
         """
-        pass
+        self.data = data
+        self.next = None
 
 
 class LinkedList:
@@ -23,7 +27,7 @@ class LinkedList:
         TODO:
         - Initialize 'head' to None to represent an empty list.
         """
-        pass
+        self.head = None
 
     def insert_at_front(self, data):
         """
@@ -32,7 +36,9 @@ class LinkedList:
         - Insert it at the front of the list (head).
         - Update 'head' to the new node.
         """
-        pass
+        new_node = Node(data)
+        new_node.next = self.head
+        self.head = new_node
 
     def insert_at_end(self, data):
         """
@@ -41,9 +47,16 @@ class LinkedList:
         - Traverse to the end of the list.
         - Set the last node's 'next' reference to the new node.
         """
-        pass
+        new_node = Node(data)
+        if not self.head:
+            self.head = new_node
+            return
+        current = self.head
+        while current.next:
+            current = current.next
+        current.next = new_node
 
-    def recursive_sum(self):
+    def recursive_sum(self, node=None, start=True):
         """
         TODO:
         - Use recursion to sum all node data in the list.
@@ -52,9 +65,13 @@ class LinkedList:
           2. Otherwise, returns node.data + recursive call on node.next.
         - Return the total sum.
         """
-        pass
+        if start:
+            node = self.head
+        if not node:
+            return 0
+        return node.data + self.recursive_sum(node.next, False)
 
-    def recursive_reverse(self):
+    def recursive_reverse(self, target, node=None, start=True):
         """
         TODO:
         - Reverse the list in-place using recursion.
@@ -64,7 +81,13 @@ class LinkedList:
           3. Otherwise, swap pointers and recurse.
         - Update 'head' to the returned new head.
         """
-        pass
+        if start:
+            node = self.head
+        if not node:
+            return False
+        if node.data == target:
+            return True
+        return self.recursive_reverse(target, node.next, False)
 
     def recursive_search(self, target):
         """
@@ -75,7 +98,13 @@ class LinkedList:
           2. Returns True if current node's data == target.
           3. Otherwise, recurse on the next node.
         """
-        pass
+        def _reverse(curr, prev):
+            if not curr:
+                return prev
+            next_node = curr.next
+            curr.next = prev
+            return _reverse(next_node, curr)
+        self.head = _reverse(self.head, None)
 
     def display(self):
         """
@@ -84,4 +113,9 @@ class LinkedList:
         - Traverse from 'head' and collect each node's data.
         - Format output as 'val -> val -> val -> None' or similar.
         """
-        pass
+        elements = []
+        current = self.head
+        while current:
+            elements.append(str(current.data))
+            current = current.next
+        print(" -> ".join(elements) + " -> None")
