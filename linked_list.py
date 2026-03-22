@@ -71,7 +71,7 @@ class LinkedList:
             return 0
         return node.data + self.recursive_sum(node.next, False)
 
-    def recursive_reverse(self, target, node=None, start=True):
+    def recursive_reverse(self):
         """
         TODO:
         - Reverse the list in-place using recursion.
@@ -81,15 +81,15 @@ class LinkedList:
           3. Otherwise, swap pointers and recurse.
         - Update 'head' to the returned new head.
         """
-        if start:
-            node = self.head
-        if not node:
-            return False
-        if node.data == target:
-            return True
-        return self.recursive_reverse(target, node.next, False)
+        def _reverse(curr, prev):
+            if not curr:
+                return prev
+            next_node = curr.next
+            curr.next = prev
+            return _reverse(next_node, curr)
+        self.head = _reverse(self.head, None)
 
-    def recursive_search(self, target):
+    def recursive_search(self, target, node=None, start=True):
         """
         TODO:
         - Return True if 'target' is found, otherwise False, using recursion.
@@ -98,13 +98,17 @@ class LinkedList:
           2. Returns True if current node's data == target.
           3. Otherwise, recurse on the next node.
         """
-        def _reverse(curr, prev):
-            if not curr:
-                return prev
-            next_node = curr.next
-            curr.next = prev
-            return _reverse(next_node, curr)
-        self.head = _reverse(self.head, None)
+        # 1. Handle starting point
+        if start:
+            node = self.head
+        # 2. Base case: Not found
+        if not node:
+            return False
+        # 3. Base case: Found
+        if node.data == target:
+            return True
+        # 4. Recurse
+        return self.recursive_search(target, node.next, False)
 
     def display(self):
         """
